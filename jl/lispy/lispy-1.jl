@@ -1,16 +1,6 @@
 using Base.Test
 import Base.(==)
 
-type Simbol
-    s::String
-end
-(==)(x::Simbol, s::Simbol) = s.s == x.s
-#(==)(x::WeakRef, s::Simbol) = s.s == x
-(==)(s::Simbol, x::WeakRef) = s.s == x
-(==)(s::Simbol, x::Any) = s.s == x
-#(==)(x::Any, s::Simbol) = s.s == x
-macro s_str(s) Simbol(s) end
-
 function tokenize(str)
     split(replace(replace(str, "(", " ( "), ")", " ) "))
 end
@@ -38,65 +28,68 @@ function atom(token)
     try return int(token)
     catch
         try return float(token)
-        catch return Simbol(token) end
+        catch return symbol(token) end
     end
 end
 
-Env = Dict{Simbol, Any}
+macro s_str(s) :(symbol($s)) end
+
+Env = Dict{Symbol, Any}
 function standard_env()
-#    env = Env([Simbol(string(s)) => Base.(s) for s in
+#    env = Env([Symbol(string(s)) => Base.(s) for s in
 #              filter(x->isa(string(x),ASCIIString),names(Base))])
     env = Env()
     merge!(env, Dict(
-        s"abs"   => abs,
-        s"append"=> push!,
-        s"apply" => apply,
-        s"begin" => x -> x[end],
-        s"car"   => x -> x[1],
-        s"cdr"   => x -> x[2:end],
-        s"cons"  => (x,y) -> push!(Any[x], y),
-        s"eq?"   => isa,
-        s"equal?"=> isequal,
-        s"length"=> length,
-        s"list"  => x -> [x],
-        s"list?" => x -> isa(x, Vector),
-        s"map"   => map,
-        s"max"   => max,
-        s"min"   => min,
-        s"not"   => !,
-        s"null?" => isempty,
-        s"number?"=> x -> isa(x, Number),
+        :abs        => abs,
+        :append     => push!,
+        :apply      => apply,
+        :begin      => x -> x[end],
+        :car        => x -> x[1],
+        :cdr        => x -> x[2:end],
+        :cons       => (x,y) -> push!(Any[x], y),
+        s"eq?"      => isa,
+        s"equal?"   => isequal,
+        :length     => length,
+        :list       => x -> [x],
+        s"list?"    => x -> isa(x, Vector),
+        :map        => map,
+        :max        => max,
+        :min        => min,
+        :not        => !,
+        s"null?"    => isempty,
+        s"number?"  => x -> isa(x, Number),
         s"procedure?" => x -> isa(x, Base.Callable),
-        s"round" => round,
-        s"symbol?"=> x -> isa(x, Symbol),
-        s"*"     => *,
-        s"+"     => +,
-        s"-"     => -
+        :round      => round,
+        s"symbol?"  => x -> isa(x, Symbol),
+        :*          => *,
+        :+          => +,
+        :-          => -,
+        :pi         => pi
         ))
 end
 
 global_env = standard_env()
 
 function evak(x, env = global_env)
-    println(x)
     # Evaluate an expression in an environment
-    if isa(x, Simbol)
+    if isa(x, Symbol)
         return env[x]
     elseif !isa(x, Vector)
         return x
-    elseif x[1] == "quote"
+    elseif x[1] == :quote
         (_, exp) = x
         return exp
-    elseif x[1] == "if"
+    elseif x[1] == :if
         (_, test, conseq, alt) = x
         exp = (if evak(test,env) conseq else alt end)
         return evak(exp, env)
-    elseif x[1] == "define"
+    elseif x[1] == :define
         (_, var, exp) = x
         env[var] = evak(exp, env)
     else
         proc = evak(x[1], env)
-        args = [evak(arg,env) for arg in x[1:end]]
+        args = [evak(arg,env) for arg in x[2:end]]
+        #println("F: ", proc, " r: ", args)
         return proc(args...)
     end
 end
