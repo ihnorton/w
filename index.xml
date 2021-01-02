@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Isaiah Norton</title>
+    <link>http://ihnorton.github.io/</link>
+    <description>Recent content on Isaiah Norton</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 02 Jan 2021 00:10:15 -0500</lastBuildDate><atom:link href="http://ihnorton.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hello World</title>
+      <link>http://ihnorton.github.io/posts/hello-world/</link>
+      <pubDate>Sat, 02 Jan 2021 00:10:15 -0500</pubDate>
+      
+      <guid>http://ihnorton.github.io/posts/hello-world/</guid>
+      <description>Beginning Rather inauspiciously, indeed. This site is about as it can be; heavier dependency-wise, but far simpler to write than raw HTML, thanks to Hugo and Hugo-Ink theme. I shall be honest and avoid resetting the timestamp on this post.</description>
+    </item>
+    
+  </channel>
+</rss>
