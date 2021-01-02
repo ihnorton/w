@@ -1,5 +1,6 @@
-baseURL = "http://ihnorton.github.io/"
+baseURL = "//ihnorton.github.io"
 languageCode = "en-us"
 title = "Isaiah Norton"
 theme = "ink"
 publishDir = "../_site"
+relativeURLs = "true"
