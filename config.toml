@@ -1,5 +1,5 @@
 baseURL = "http://ihnorton.github.io/"
 languageCode = "en-us"
 title = "Isaiah Norton"
-theme = "hugo-ink"
+theme = "ink"
 publishDir = "../_site"
